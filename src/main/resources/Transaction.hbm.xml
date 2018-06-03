@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 3, 2018 2:37:41 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="fptu.summer.model.Transaction" table="transaction" catalog="personal_finance_db" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="ledger" class="fptu.summer.model.Ledger" fetch="select">
+            <column name="ledger_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="debtor" class="fptu.summer.model.Stakeholder" fetch="select">
+            <column name="debtor_id" />
+        </many-to-one>
+        <many-to-one name="creditor" class="fptu.summer.model.Stakeholder" fetch="select">
+            <column name="creditor_id" />
+        </many-to-one>
+        <many-to-one name="transactionGroup" class="fptu.summer.model.TransactionGroup" fetch="select">
+            <column name="transaction_group_id" not-null="true" />
+        </many-to-one>
+        <property name="balance" type="double">
+            <column name="balance" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="note" type="string">
+            <column name="note" length="300" />
+        </property>
+        <property name="countedOnReport" type="boolean">
+            <column name="counted_on_report" not-null="true" />
+        </property>
+        <property name="insertDate" type="timestamp">
+            <column name="insert_date" length="19" not-null="true" />
+        </property>
+        <property name="lastUpdate" type="timestamp">
+            <column name="last_update" length="19" not-null="true" />
+        </property>
+        <property name="status" type="int">
+            <column name="status" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

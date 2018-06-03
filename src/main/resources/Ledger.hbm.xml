@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 3, 2018 2:37:41 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="fptu.summer.model.Ledger" table="ledger" catalog="personal_finance_db" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="name" type="string">
+            <column name="name" length="50" not-null="true" />
+        </property>
+        <property name="currency" type="string">
+            <column name="currency" length="10" not-null="true" />
+        </property>
+        <property name="countedOnReport" type="boolean">
+            <column name="counted_on_report" not-null="true" />
+        </property>
+        <property name="insertDate" type="timestamp">
+            <column name="insert_date" length="19" not-null="true" />
+        </property>
+        <property name="lastUpdate" type="timestamp">
+            <column name="last_update" length="19" not-null="true" />
+        </property>
+        <property name="status" type="int">
+            <column name="status" not-null="true" />
+        </property>
+        <set name="transactions" table="transaction" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ledger_id" not-null="true" />
+            </key>
+            <one-to-many class="fptu.summer.model.Transaction" />
+        </set>
+        <set name="transactionGroups" table="transaction_group" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ledger_id" not-null="true" />
+            </key>
+            <one-to-many class="fptu.summer.model.TransactionGroup" />
+        </set>
+    </class>
+</hibernate-mapping>

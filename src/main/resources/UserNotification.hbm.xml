@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 3, 2018 2:37:41 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="personal_finance_db" name="fptu.summer.model.UserNotification" optimistic-lock="version" table="user_notification">
+    <composite-id class="fptu.summer.model.id.UserNotificationId" name="id">
+      <key-property name="userId" type="int">
+        <column name="user_id"/>
+      </key-property>
+      <key-property name="notificationId" type="long">
+        <column name="notification_id"/>
+      </key-property>
+    </composite-id>
+    <many-to-one class="fptu.summer.model.Notification" fetch="select" insert="false" name="notification" update="false">
+      <column name="notification_id" not-null="true"/>
+    </many-to-one>
+    <property name="isReaded" type="boolean">
+      <column name="is_readed" not-null="true"/>
+    </property>
+  </class>
+</hibernate-mapping>

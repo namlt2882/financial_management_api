@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 3, 2018 2:37:41 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="fptu.summer.model.LastViewNotification" table="last_view_notification" catalog="personal_finance_db" optimistic-lock="version">
+        <id name="userId" type="int">
+            <column name="user_id" />
+            <generator class="foreign">
+                <param name="property">user</param>
+            </generator>
+        </id>
+        <property name="lastView" type="timestamp">
+            <column name="last_view" length="19" />
+        </property>
+    </class>
+</hibernate-mapping>

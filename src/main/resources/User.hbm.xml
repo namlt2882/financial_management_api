@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 3, 2018 2:37:41 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="fptu.summer.model.User" table="user" catalog="personal_finance_db" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="username" type="string">
+            <column name="username" length="30" not-null="true" unique="true" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="30" not-null="true" />
+        </property>
+        <property name="firstName" type="string">
+            <column name="first_name" length="50" not-null="true" />
+        </property>
+        <property name="lastName" type="string">
+            <column name="last_name" length="50" />
+        </property>
+        <property name="birthday" type="date">
+            <column name="birthday" length="10" />
+        </property>
+        <property name="insertDate" type="timestamp">
+            <column name="insert_date" length="19" not-null="true" />
+        </property>
+        <property name="lastUpdate" type="timestamp">
+            <column name="last_update" length="19" not-null="true" />
+        </property>
+        <property name="status" type="int">
+            <column name="status" not-null="true" />
+        </property>
+        <one-to-one name="userSetting" class="fptu.summer.model.UserSetting"></one-to-one>
+        <set name="roles" table="user_role" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <many-to-many entity-name="fptu.summer.model.Role">
+                <column name="role_id" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>
