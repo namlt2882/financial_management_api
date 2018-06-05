@@ -24,7 +24,7 @@
             <column name="birthday" length="10" />
         </property>
         <property name="insertDate" type="timestamp">
-            <column name="insert_date" length="19" not-null="true" />
+            <column name="insert_date" length="19" not-null="true"/>
         </property>
         <property name="lastUpdate" type="timestamp">
             <column name="last_update" length="19" not-null="true" />

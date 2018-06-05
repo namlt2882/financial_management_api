@@ -84,7 +84,7 @@
                 <!-- Config: contextPath and Port (Default: /SpringMVCRESTful : 8080) -->
                 
                 <configuration>
-                    <path>/BasicSpringREST</path>
+                    <path>/api</path>
                     <port>9999</port>
                 </configuration>
                   

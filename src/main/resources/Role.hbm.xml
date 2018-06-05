@@ -14,13 +14,5 @@
         <property name="status" type="int">
             <column name="status" not-null="true" />
         </property>
-        <set name="users" table="user_role" inverse="false" lazy="true" fetch="select">
-            <key>
-                <column name="role_id" not-null="true" />
-            </key>
-            <many-to-many entity-name="fptu.summer.model.User">
-                <column name="user_id" not-null="true" />
-            </many-to-many>
-        </set>
     </class>
 </hibernate-mapping>

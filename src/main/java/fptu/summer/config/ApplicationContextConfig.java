@@ -5,6 +5,8 @@
  */
 package fptu.summer.config;
 
+import fptu.summer.dao.RoleDAO;
+import fptu.summer.dao.UserDAO;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
@@ -22,9 +23,6 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @Configuration
 @ComponentScan("fptu.summer.*")
 public class ApplicationContextConfig {
-
-    @Autowired
-    private Environment env;
 
     public ApplicationContextConfig() {
     }
@@ -51,6 +49,16 @@ public class ApplicationContextConfig {
         configuration.configure("hibernate.cfg.xml");
         StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         return configuration.buildSessionFactory(ssrb.build());
+    }
+
+    @Bean(name = "userDAO")
+    public UserDAO getUserDAO() {
+        return new UserDAO();
+    }
+
+    @Bean(name = "roleDAO")
+    public RoleDAO getRoleDAO() {
+        return new RoleDAO();
     }
 
 }

@@ -10,6 +10,7 @@
                 <param name="property">user</param>
             </generator>
         </id>
+        <one-to-one name="user" class="fptu.summer.model.User" constrained="true"></one-to-one>
         <property name="monthStartDate" type="int">
             <column name="month_start_date" not-null="true" />
         </property>

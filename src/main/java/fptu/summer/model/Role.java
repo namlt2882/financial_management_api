@@ -12,7 +12,6 @@ public class Role implements java.io.Serializable {
     private Integer id;
     private String name;
     private int status;
-    private Set users = new HashSet(0);
 
     public Role() {
     }
@@ -39,14 +38,6 @@ public class Role implements java.io.Serializable {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public Set getUsers() {
-        return this.users;
-    }
-
-    public void setUsers(Set users) {
-        this.users = users;
     }
 
 }

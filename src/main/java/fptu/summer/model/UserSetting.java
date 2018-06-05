@@ -9,9 +9,10 @@ import java.util.Date;
 public class UserSetting implements java.io.Serializable {
 
     private int userId;
-    private int monthStartDate;
-    private String timeFormat;
-    private Date lastUpdate;
+    private User user;
+    private int monthStartDate = 1;
+    private String timeFormat = "dd/mm/yyyy";
+    private Date lastUpdate = new Date();
 
     public UserSetting() {
     }
@@ -46,6 +47,14 @@ public class UserSetting implements java.io.Serializable {
 
     public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }
