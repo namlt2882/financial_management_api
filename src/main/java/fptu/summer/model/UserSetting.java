@@ -1,6 +1,7 @@
 package fptu.summer.model;
 // Generated Jun 3, 2018 2:37:40 PM by Hibernate Tools 4.3.1
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 
 /**
@@ -9,6 +10,7 @@ import java.util.Date;
 public class UserSetting implements java.io.Serializable {
 
     private int userId;
+    @JsonIgnore
     private User user;
     private int monthStartDate = 1;
     private String timeFormat = "dd/mm/yyyy";

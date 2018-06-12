@@ -12,8 +12,9 @@ import fptu.summer.model.Role;
 import fptu.summer.model.User;
 import fptu.summer.model.UserSetting;
 import fptu.summer.utils.DataValidateException;
+import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,23 +35,90 @@ public class UserService {
 
     public User createNewUser(User user) {
         try {
+            //insert role for user
+            List<Role> roles = roleDAO.findAll();
+            roles.stream().filter(r -> r.getName().equalsIgnoreCase(fptu.summer.model.enumeration.Role.USER.name())).findAny().ifPresent(r -> {
+                user.getRoles().add(r);
+            });
+            UserSetting userSetting = new UserSetting();
+            user.setUserSetting(userSetting);
+            userSetting.setUser(user);
             //insert user
-            Set<Role> roles = user.getRoles();
-            user.setRoles(null);
             User result = userDAO.insert(user);
             //insert user setting
-            userDAO.addSetting(user, new UserSetting());
-            //insert role for user
-            roles.stream().forEach(r -> {
-                if (r.getName().equals(fptu.summer.model.enumeration.Role.ADMIN.name())) {
-                    throw new DataValidateException("Can not create admin!");
-                }
-                userDAO.addRoles(user.getId(), r.getId());
-            });
+//            UserSetting newSetting = new UserSetting();
+//            newSetting.setUserId(result.getId());
+//            userDAO.addSetting(result, newSetting);
+            
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new DataValidateException(e);
+            throw new DataValidateException(e.getMessage());
+        }
+    }
+
+    public void updateUser(User user) {
+        try {
+            User tmp = userDAO.findByUsername(user.getUsername());
+            if (tmp != null) {
+                tmp.setFirstName(user.getFirstName());
+                tmp.setLastName(user.getLastName());
+                tmp.setBirthday(user.getBirthday());
+                userDAO.update(tmp);
+            } else {
+                throw new DataValidateException("The user is not existed!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DataValidateException(e.getMessage());
+        }
+    }
+
+    public void changeUserPassword(String username, String password) {
+        try {
+            User tmp = userDAO.findByUsername(username);
+            if (tmp != null) {
+                tmp.setPassword(password);
+                tmp.setLastUpdate(new Date());
+                userDAO.update(tmp);
+            } else {
+                throw new DataValidateException("The user is not existed!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DataValidateException(e.getMessage());
+        }
+    }
+
+    public UserSetting updateUserSetting(String username, UserSetting userSetting) {
+        try {
+            UserSetting tmp = userDAO.findSettingByUsername(username);
+            if (tmp != null) {
+                tmp.setMonthStartDate(userSetting.getMonthStartDate());
+                tmp.setTimeFormat(userSetting.getTimeFormat());
+                tmp.setLastUpdate(new Date());
+                userDAO.updateSetting(tmp);
+                return tmp;
+            } else {
+                throw new DataValidateException("The user is not existed!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DataValidateException(e.getMessage());
+        }
+    }
+
+    public UserSetting getSettingByUsername(String username) {
+        try {
+            UserSetting tmp = userDAO.findSettingByUsername(username);
+            if (tmp != null) {
+                return tmp;
+            } else {
+                throw new DataValidateException("The user is not existed!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DataValidateException(e.getMessage());
         }
     }
 

@@ -5,13 +5,8 @@
  */
 package fptu.summer.dto;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fptu.summer.model.UserSetting;
 import fptu.summer.model.enumeration.UserStatus;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

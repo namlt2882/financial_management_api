@@ -18,6 +18,14 @@ public class RoleDAO extends DAO {
         super();
     }
 
+    public List<Role> findAll(){
+        try{
+            return getSession().createCriteria(Role.class).list();
+        }finally{
+            close();
+        }
+    }
+    
     public List<Role> findByList(List<Integer> list) {
         try {
             return getSession()

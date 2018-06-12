@@ -8,8 +8,8 @@ package fptu.summer.dao;
 import fptu.summer.model.Role;
 import fptu.summer.model.User;
 import fptu.summer.model.UserSetting;
-import java.util.Set;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -36,6 +36,43 @@ public class UserDAO extends DAO {
         }
     }
 
+    public User update(User user) {
+        try {
+            begin();
+            getSession().update(user);
+            commit();
+            return user;
+        } catch (Exception e) {
+            rollback();
+            throw e;
+        } finally {
+            close();
+        }
+    }
+
+    public User findByUsername(String username) {
+        try {
+            List<User> l = (List<User>) getSession()
+                    .createCriteria(User.class)
+                    .add(Restrictions.eq("username", username)).list();
+            if (l != null && l.size() != 0) {
+                return l.get(0);
+            } else {
+                return null;
+            }
+        } finally {
+            close();
+        }
+    }
+
+    public User findById(Integer id) {
+        try {
+            return (User) getSession().get(User.class, id);
+        } finally {
+            close();
+        }
+    }
+
     public void addRoles(int userId, int roleId) {
         try {
             begin();
@@ -51,14 +88,43 @@ public class UserDAO extends DAO {
             close();
         }
     }
-    
-    public void addSetting(User user, UserSetting us){
+
+    public UserSetting findSettingByUsername(String username) {
+        try {
+            List l = getSession()
+                    .createCriteria(User.class)
+                    .add(Restrictions.eq("username", username)).list();
+            if (l != null && l.size() != 0) {
+                User user = (User) l.get(0);
+                return user.getUserSetting();
+            } else {
+                return null;
+            }
+        } finally {
+            close();
+        }
+    }
+
+//    public void addSetting(User user, UserSetting us) {
+//        try {
+//            begin();
+//            us.setUser(user);
+//            getSession().save(us);
+//            commit();
+//        } catch (Exception e) {
+//        }
+//    }
+
+    public void updateSetting(UserSetting us) {
         try {
             begin();
-            us.setUser(user);
-            getSession().save(us);
+            getSession().update(us);
             commit();
         } catch (Exception e) {
+            rollback();
+            throw e;
+        } finally {
+            close();
         }
     }
 }
