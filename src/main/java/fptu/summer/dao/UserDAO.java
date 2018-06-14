@@ -17,11 +17,11 @@ import org.hibernate.criterion.Restrictions;
  */
 //@Repository
 public class UserDAO extends DAO {
-
+    
     public UserDAO() {
         super();
     }
-
+    
     public User insert(User user) {
         try {
             begin();
@@ -35,7 +35,7 @@ public class UserDAO extends DAO {
             close();
         }
     }
-
+    
     public User update(User user) {
         try {
             begin();
@@ -49,12 +49,13 @@ public class UserDAO extends DAO {
             close();
         }
     }
-
-    public User findByUsername(String username) {
+    
+    public User checkLogin(User user) {
         try {
-            List<User> l = (List<User>) getSession()
-                    .createCriteria(User.class)
-                    .add(Restrictions.eq("username", username)).list();
+            List<User> l = getSession().createCriteria(User.class)
+                    .add(Restrictions.eq("username", user.getUsername()))
+                    .add(Restrictions.eq("password", user.getPassword()))
+                    .list();
             if (l != null && l.size() != 0) {
                 return l.get(0);
             } else {
@@ -64,7 +65,25 @@ public class UserDAO extends DAO {
             close();
         }
     }
-
+    
+    public User findByUsername(String username) {
+        try {
+            List<User> l = getSession()
+                    .createCriteria(User.class, "u")
+//                    .createAlias("u.roles", "roles", JoinType.INNER_JOIN)
+                    .add(Restrictions.eq("username", username)).list();
+            if (l != null && l.size() != 0) {
+                User user = l.get(0);
+                user.getRoles().size();
+                return user;
+            } else {
+                return null;
+            }
+        } finally {
+            close();
+        }
+    }
+    
     public User findById(Integer id) {
         try {
             return (User) getSession().get(User.class, id);
@@ -72,7 +91,7 @@ public class UserDAO extends DAO {
             close();
         }
     }
-
+    
     public void addRoles(int userId, int roleId) {
         try {
             begin();
@@ -88,7 +107,7 @@ public class UserDAO extends DAO {
             close();
         }
     }
-
+    
     public UserSetting findSettingByUsername(String username) {
         try {
             List l = getSession()
@@ -114,7 +133,6 @@ public class UserDAO extends DAO {
 //        } catch (Exception e) {
 //        }
 //    }
-
     public void updateSetting(UserSetting us) {
         try {
             begin();

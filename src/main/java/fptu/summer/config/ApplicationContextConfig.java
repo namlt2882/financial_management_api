@@ -51,6 +51,21 @@ public class ApplicationContextConfig {
         return configuration.buildSessionFactory(ssrb.build());
     }
 
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new PasswordEncoder() {
+//            @Override
+//            public String encode(CharSequence cs) {
+//                return cs.toString();
+//            }
+//
+//            @Override
+//            public boolean matches(CharSequence cs, String string) {
+//                return cs.toString().equals(string);
+//            }
+//        };
+//    }
+
     @Bean(name = "userDAO")
     public UserDAO getUserDAO() {
         return new UserDAO();

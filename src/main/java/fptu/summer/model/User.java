@@ -1,6 +1,7 @@
 package fptu.summer.model;
 // Generated Jun 3, 2018 2:37:40 PM by Hibernate Tools 4.3.1
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fptu.summer.model.enumeration.UserStatus;
 import java.util.Date;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ public class User implements java.io.Serializable {
 
     private Integer id;
     private String username;
+    @JsonIgnore
     private String password;
     private String firstName;
     private String lastName;

@@ -40,16 +40,12 @@ public class UserService {
             roles.stream().filter(r -> r.getName().equalsIgnoreCase(fptu.summer.model.enumeration.Role.USER.name())).findAny().ifPresent(r -> {
                 user.getRoles().add(r);
             });
+            //insert user setting
             UserSetting userSetting = new UserSetting();
             user.setUserSetting(userSetting);
             userSetting.setUser(user);
             //insert user
             User result = userDAO.insert(user);
-            //insert user setting
-//            UserSetting newSetting = new UserSetting();
-//            newSetting.setUserId(result.getId());
-//            userDAO.addSetting(result, newSetting);
-            
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,6 +116,10 @@ public class UserService {
             e.printStackTrace();
             throw new DataValidateException(e.getMessage());
         }
+    }
+
+    public User findUserByUsername(String username) {
+        return userDAO.findByUsername(username);
     }
 
     public User convertWrapperToUser(UserWrapper wrapper) {
