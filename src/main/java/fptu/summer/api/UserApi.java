@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ADMIN
  */
 @RestController
-@RequestMapping("user")
+@RequestMapping("users")
 public class UserApi {
 
     @Autowired
@@ -34,7 +34,7 @@ public class UserApi {
     public UserApi() {
     }
 
-    @PostMapping(value = "/register", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public User addNewUser(@RequestBody User user) {
         user.setUsername(user.getUsername().toString());
         User result = userService.createNewUser(user);
@@ -50,7 +50,7 @@ public class UserApi {
         return result;
     }
 
-    @PreAuthorize(value = "hasAnyRole({'USER'})")
+    @Secured({"ROLE_USER"})
     @PostMapping(value = "/{username}/setPassword", produces = {MediaType.TEXT_PLAIN_VALUE})
     public String changePassword(@PathVariable("username") String username, @RequestParam("password") String password) {
         String result = "Successfully!";
@@ -58,11 +58,13 @@ public class UserApi {
         return result;
     }
 
+    @Secured({"ROLE_USER"})
     @GetMapping(value = "/{username}/settings", produces = {MediaType.APPLICATION_JSON_VALUE})
     public UserSetting getUserSettingByUsername(@PathVariable("username") String username) {
         return userService.getSettingByUsername(username);
     }
 
+    @Secured({"ROLE_USER"})
     @PostMapping(value = "/{username}/settings", produces = {MediaType.TEXT_PLAIN_VALUE})
     public UserSetting updateUserSetting(@PathVariable("username") String username,
             @RequestParam("monthStartDate") int monthStartDate,
