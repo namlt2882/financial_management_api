@@ -12,6 +12,7 @@ import java.util.Set;
  */
 public class User implements java.io.Serializable {
 
+    @JsonIgnore
     private Integer id;
     private String username;
     @JsonIgnore

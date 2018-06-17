@@ -6,18 +6,13 @@
 package fptu.summer.api;
 
 import fptu.summer.model.User;
-import fptu.summer.model.UserSetting;
 import fptu.summer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,45 +29,12 @@ public class UserApi {
     public UserApi() {
     }
 
+    @Secured({"ROLE_USER"})
     @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public User addNewUser(@RequestBody User user) {
         user.setUsername(user.getUsername().toString());
         User result = userService.createNewUser(user);
         return result;
-    }
-
-//    @PreAuthorize(value = "hasAnyRole({'USER'})")
-    @Secured({"ROLE_USER"})
-    @PostMapping(value = "/{username}")
-    public String updateUser(@RequestBody User user) {
-        String result = "success";
-        userService.updateUser(user);
-        return result;
-    }
-
-    @Secured({"ROLE_USER"})
-    @PostMapping(value = "/{username}/setPassword", produces = {MediaType.TEXT_PLAIN_VALUE})
-    public String changePassword(@PathVariable("username") String username, @RequestParam("password") String password) {
-        String result = "Successfully!";
-        userService.changeUserPassword(username, password);
-        return result;
-    }
-
-    @Secured({"ROLE_USER"})
-    @GetMapping(value = "/{username}/settings", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public UserSetting getUserSettingByUsername(@PathVariable("username") String username) {
-        return userService.getSettingByUsername(username);
-    }
-
-    @Secured({"ROLE_USER"})
-    @PostMapping(value = "/{username}/settings", produces = {MediaType.TEXT_PLAIN_VALUE})
-    public UserSetting updateUserSetting(@PathVariable("username") String username,
-            @RequestParam("monthStartDate") int monthStartDate,
-            @RequestParam("timeFormat") String timeFormat) {
-        UserSetting setting = new UserSetting();
-        setting.setMonthStartDate(monthStartDate);
-        setting.setTimeFormat(timeFormat);
-        return userService.updateUserSetting(username, setting);
     }
 
 }
