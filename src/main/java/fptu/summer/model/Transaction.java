@@ -19,8 +19,17 @@ public class Transaction implements java.io.Serializable {
     private Date insertDate;
     private Date lastUpdate;
     private int status;
+    private Date date;
 
     public Transaction() {
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Long getId() {

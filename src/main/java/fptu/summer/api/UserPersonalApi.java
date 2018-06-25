@@ -30,14 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("user")
 public class UserPersonalApi {
 
-    @Autowired
-    private UserService userService;
-
     @Secured({"ROLE_USER"})
     @GetMapping(value = "/")
     public User getUser(Authentication authentication) {
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-        return userService.findUserByUsername(username);
+        return new UserService().findUserByUsername(username);
     }
 
 //    @PreAuthorize(value = "hasAnyRole({'USER'})")
@@ -47,7 +44,7 @@ public class UserPersonalApi {
         String result = "success";
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
         user.setUsername(username);
-        userService.updateUser(user);
+        new UserService().updateUser(user);
         return result;
     }
 
@@ -56,7 +53,7 @@ public class UserPersonalApi {
     public String changePassword(Authentication authentication, @RequestParam("password") String password) {
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
         String result = "Successfully!";
-        userService.changeUserPassword(username, password);
+        new UserService().changeUserPassword(username, password);
         return result;
     }
 
@@ -64,7 +61,7 @@ public class UserPersonalApi {
     @GetMapping(value = "/settings", produces = {MediaType.APPLICATION_JSON_VALUE})
     public UserSetting getUserSettingByUsername(Authentication authentication) {
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-        return userService.getSettingByUsername(username);
+        return new UserService().getSettingByUsername(username);
     }
 
     @Secured({"ROLE_USER"})
@@ -75,6 +72,6 @@ public class UserPersonalApi {
         UserSetting setting = new UserSetting();
         setting.setMonthStartDate(monthStartDate);
         setting.setTimeFormat(timeFormat);
-        return userService.updateUserSetting(username, setting);
+        return new UserService().updateUserSetting(username, setting);
     }
 }

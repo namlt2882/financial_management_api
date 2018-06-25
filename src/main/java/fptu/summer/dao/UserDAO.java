@@ -9,19 +9,20 @@ import fptu.summer.model.Role;
 import fptu.summer.model.User;
 import fptu.summer.model.UserSetting;
 import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
 /**
  *
  * @author ADMIN
  */
-//@Repository
 public class UserDAO extends DAO {
-    
+
     public UserDAO() {
         super();
     }
-    
+
     public User insert(User user) {
         try {
             begin();
@@ -35,7 +36,7 @@ public class UserDAO extends DAO {
             close();
         }
     }
-    
+
     public User update(User user) {
         try {
             begin();
@@ -49,13 +50,14 @@ public class UserDAO extends DAO {
             close();
         }
     }
-    
+
     public User checkLogin(User user) {
         try {
-            List<User> l = getSession().createCriteria(User.class)
+            DetachedCriteria dc = DetachedCriteria.forClass(User.class)
+                    .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
                     .add(Restrictions.eq("username", user.getUsername()))
-                    .add(Restrictions.eq("password", user.getPassword()))
-                    .list();
+                    .add(Restrictions.eq("password", user.getPassword()));
+            List<User> l = dc.getExecutableCriteria(getSession()).list();
             if (l != null && l.size() != 0) {
                 return l.get(0);
             } else {
@@ -65,14 +67,14 @@ public class UserDAO extends DAO {
             close();
         }
     }
-    
+
     public User findByUsername(String username) {
         try {
             List<User> l = getSession()
-                    .createCriteria(User.class, "u")
-//                    .createAlias("u.roles", "roles", JoinType.INNER_JOIN)
+                    .createCriteria(User.class)
+                    //                    .createAlias("u.roles", "roles", JoinType.INNER_JOIN)
                     .add(Restrictions.eq("username", username)).list();
-            if (l != null && l.size() != 0) {
+            if (l != null && !l.isEmpty()) {
                 User user = l.get(0);
                 user.getRoles().size();
                 return user;
@@ -83,7 +85,7 @@ public class UserDAO extends DAO {
             close();
         }
     }
-    
+
     public User findById(Integer id) {
         try {
             return (User) getSession().get(User.class, id);
@@ -91,7 +93,7 @@ public class UserDAO extends DAO {
             close();
         }
     }
-    
+
     public void addRoles(int userId, int roleId) {
         try {
             begin();
@@ -107,7 +109,7 @@ public class UserDAO extends DAO {
             close();
         }
     }
-    
+
     public UserSetting findSettingByUsername(String username) {
         try {
             List l = getSession()

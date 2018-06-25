@@ -26,17 +26,20 @@
         <property name="status" type="int">
             <column name="status" not-null="true" />
         </property>
-        <set name="transactions" table="transaction" inverse="true" lazy="true" fetch="select">
+        <set name="transactions" table="transaction" inverse="true" lazy="true" fetch="select" cascade="save-update">
             <key>
                 <column name="ledger_id" not-null="true" />
             </key>
             <one-to-many class="fptu.summer.model.Transaction" />
         </set>
-        <set name="transactionGroups" table="transaction_group" inverse="true" lazy="true" fetch="select">
+        <set name="transactionGroups" table="transaction_group" inverse="true" lazy="true" fetch="select" cascade="save-update">
             <key>
                 <column name="ledger_id" not-null="true" />
             </key>
             <one-to-many class="fptu.summer.model.TransactionGroup" />
         </set>
+        <property name="userId" type="java.lang.Integer">
+            <column name="user_id" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

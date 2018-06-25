@@ -26,12 +26,9 @@ import org.springframework.stereotype.Service;
 @Service("securityUserDetailsService")
 public class SecurityUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserDAO userDAO;
-
     @Override
     public UserDetails loadUserByUsername(String string) throws UsernameNotFoundException {
-        User user = userDAO.findByUsername(string);
+        User user = new UserDAO().findByUsername(string);
         if (user != null) {
             return buildUserDetail(user);
         }

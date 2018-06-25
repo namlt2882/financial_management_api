@@ -38,5 +38,8 @@
         <property name="status" type="int">
             <column name="status" not-null="true" />
         </property>
+        <property name="date" type="date">
+            <column name="tdate" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

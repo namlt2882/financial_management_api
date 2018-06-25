@@ -19,10 +19,7 @@ import fptu.summer.config.jwt.JwtManager;
 import fptu.summer.model.Role;
 import fptu.summer.model.User;
 import fptu.summer.model.enumeration.UserStatus;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 

@@ -7,20 +7,15 @@ package fptu.summer.service;
 
 import fptu.summer.dao.UserDAO;
 import fptu.summer.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  *
  * @author ADMIN
  */
-@Service
 public class AuthenticationService {
 
-    @Autowired
-    UserDAO userDAO;
-
     public boolean checkLogin(User user) {
+        UserDAO userDAO = new UserDAO();
         return userDAO.checkLogin(user) != null;
     }
 }

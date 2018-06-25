@@ -9,9 +9,7 @@ import fptu.summer.model.User;
 import fptu.summer.service.AuthenticationService;
 import fptu.summer.service.JwtService;
 import fptu.summer.service.UserService;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -29,18 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationApi {
 
     @Autowired
-    AuthenticationService authenticationService;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
     private JwtService jwtService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password) {
         String result = "";
         HttpStatus httpStatus = null;
+        AuthenticationService authenticationService = new AuthenticationService();
+        UserService userService = new UserService();
         try {
             User user = new User();
             user.setUsername(username.toUpperCase());

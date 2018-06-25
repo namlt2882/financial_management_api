@@ -8,19 +8,27 @@ package fptu.summer.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
 
 /**
  *
  * @author ADMIN
  */
-@Repository
 public abstract class DAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
 
+    static {
+        sessionFactory = buildSessionFactory();
+    }
+
+    private static SessionFactory buildSessionFactory() {
+        Configuration configuration = new Configuration();
+        configuration.configure("hibernate.cfg.xml");
+        StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
+        return configuration.buildSessionFactory(ssrb.build());
+    }
     private Session session;
 
     public DAO() {
@@ -43,6 +51,8 @@ public abstract class DAO {
 
     protected void close() {
         if (session != null) {
+//            session.flush();
+            session.clear();
             session.close();
             session = null;
         }

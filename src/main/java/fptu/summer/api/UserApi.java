@@ -23,9 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("users")
 public class UserApi {
 
-    @Autowired
-    private UserService userService;
-
     public UserApi() {
     }
 
@@ -33,7 +30,7 @@ public class UserApi {
     @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public User addNewUser(@RequestBody User user) {
         user.setUsername(user.getUsername().toString());
-        User result = userService.createNewUser(user);
+        User result = new UserService().createNewUser(user);
         return result;
     }
 

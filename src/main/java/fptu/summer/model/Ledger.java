@@ -1,6 +1,8 @@
 package fptu.summer.model;
 // Generated Jun 3, 2018 2:37:40 PM by Hibernate Tools 4.3.1
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import fptu.summer.model.enumeration.LedgerStatus;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,11 +18,23 @@ public class Ledger implements java.io.Serializable {
     private boolean countedOnReport;
     private Date insertDate;
     private Date lastUpdate;
-    private int status;
+    private int status = LedgerStatus.ENABLE.getStatus();
+    @JsonIgnore
     private Set transactions = new HashSet(0);
+    @JsonIgnore
     private Set transactionGroups = new HashSet(0);
+    @JsonIgnore
+    private Integer userId;
 
     public Ledger() {
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Long getId() {

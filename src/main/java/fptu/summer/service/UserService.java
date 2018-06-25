@@ -15,25 +15,18 @@ import fptu.summer.utils.DataValidateException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  *
  * @author ADMIN
  */
-@Service
 public class UserService {
-
-    @Autowired
-    private UserDAO userDAO;
-    @Autowired
-    private RoleDAO roleDAO;
 
     public UserService() {
     }
 
     public User createNewUser(User user) {
+        RoleDAO roleDAO = new RoleDAO();
         try {
             //insert role for user
             List<Role> roles = roleDAO.findAll();
@@ -45,6 +38,7 @@ public class UserService {
             user.setUserSetting(userSetting);
             userSetting.setUser(user);
             //insert user
+            UserDAO userDAO = new UserDAO();
             User result = userDAO.insert(user);
             return result;
         } catch (Exception e) {
@@ -54,6 +48,7 @@ public class UserService {
     }
 
     public void updateUser(User user) {
+        UserDAO userDAO = new UserDAO();
         try {
             User tmp = userDAO.findByUsername(user.getUsername());
             if (tmp != null) {
@@ -71,6 +66,7 @@ public class UserService {
     }
 
     public void changeUserPassword(String username, String password) {
+        UserDAO userDAO = new UserDAO();
         try {
             User tmp = userDAO.findByUsername(username);
             if (tmp != null) {
@@ -87,6 +83,7 @@ public class UserService {
     }
 
     public UserSetting updateUserSetting(String username, UserSetting userSetting) {
+        UserDAO userDAO = new UserDAO();
         try {
             UserSetting tmp = userDAO.findSettingByUsername(username);
             if (tmp != null) {
@@ -105,6 +102,7 @@ public class UserService {
     }
 
     public UserSetting getSettingByUsername(String username) {
+        UserDAO userDAO = new UserDAO();
         try {
             UserSetting tmp = userDAO.findSettingByUsername(username);
             if (tmp != null) {
@@ -119,10 +117,12 @@ public class UserService {
     }
 
     public User findUserByUsername(String username) {
+        UserDAO userDAO = new UserDAO();
         return userDAO.findByUsername(username);
     }
 
     public User convertWrapperToUser(UserWrapper wrapper) {
+        RoleDAO roleDAO = new RoleDAO();
         User user = new User();
         user.setId(wrapper.getId());
         user.setUsername(wrapper.getUsername());
