@@ -21,7 +21,6 @@ public class Ledger implements java.io.Serializable {
     private int status = LedgerStatus.ENABLE.getStatus();
     @JsonIgnore
     private Set transactions = new HashSet(0);
-    @JsonIgnore
     private Set transactionGroups = new HashSet(0);
     @JsonIgnore
     private Integer userId;
