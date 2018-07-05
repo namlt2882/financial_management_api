@@ -126,15 +126,6 @@ public class UserDAO extends DAO {
         }
     }
 
-//    public void addSetting(User user, UserSetting us) {
-//        try {
-//            begin();
-//            us.setUser(user);
-//            getSession().save(us);
-//            commit();
-//        } catch (Exception e) {
-//        }
-//    }
     public void updateSetting(UserSetting us) {
         try {
             begin();

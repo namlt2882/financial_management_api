@@ -8,6 +8,7 @@ package fptu.summer.dao;
 import fptu.summer.model.Ledger;
 import fptu.summer.model.User;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.hibernate.criterion.Restrictions;
@@ -92,6 +93,9 @@ public class LedgerDAO extends DAO {
 
     public List<Ledger> findByIds(List<Long> l) {
         try {
+            if (l.isEmpty()) {
+                return new LinkedList<>();
+            }
             List<Ledger> result = getSession()
                     .createCriteria(Ledger.class)
                     .add(Restrictions.in("id", l)).list();

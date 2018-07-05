@@ -6,6 +6,7 @@
 package fptu.summer.dao;
 
 import fptu.summer.model.Role;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,19 +19,22 @@ public class RoleDAO extends DAO {
         super();
     }
 
-    public List<Role> findAll(){
-        try{
+    public List<Role> findAll() {
+        try {
             return getSession().createCriteria(Role.class).list();
-        }finally{
+        } finally {
             close();
         }
     }
-    
-    public List<Role> findByList(List<Integer> list) {
+
+    public List<Role> findByList(List<Integer> l) {
         try {
+            if (l.isEmpty()) {
+                return new LinkedList<>();
+            }
             return getSession()
                     .createQuery("select r from Role r where r.id in (:ids)")
-                    .setParameterList("ids", list).list();
+                    .setParameterList("ids", l).list();
         } finally {
             close();
         }
