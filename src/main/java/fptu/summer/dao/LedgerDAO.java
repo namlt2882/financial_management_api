@@ -7,6 +7,7 @@ package fptu.summer.dao;
 
 import fptu.summer.model.Ledger;
 import fptu.summer.model.User;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,6 +84,23 @@ public class LedgerDAO extends DAO {
                 User user = l.get(0);
                 List<Ledger> result = getSession().createCriteria(Ledger.class)
                         .add(Restrictions.eq("userId", user.getId())).list();
+                return new HashSet<>(result);
+            }
+            return new HashSet<>();
+        } finally {
+            close();
+        }
+    }
+
+    public Set<Ledger> findByLastUpdate(String username, Date lastUpdate) {
+        try {
+            List<User> l = getSession().createCriteria(User.class)
+                    .add(Restrictions.eq("username", username)).list();
+            if (!l.isEmpty()) {
+                User user = l.get(0);
+                List<Ledger> result = getSession().createCriteria(Ledger.class)
+                        .add(Restrictions.eq("userId", user.getId()))
+                        .add(Restrictions.gt("lastUpdate", lastUpdate)).list();
                 return new HashSet<>(result);
             }
             return new HashSet<>();

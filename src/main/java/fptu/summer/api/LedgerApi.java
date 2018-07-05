@@ -8,6 +8,7 @@ package fptu.summer.api;
 import fptu.summer.model.Ledger;
 import fptu.summer.service.LedgerService;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,9 +33,18 @@ public class LedgerApi {
 
     @Secured({"ROLE_USER"})
     @GetMapping
-    public Set<Ledger> getUserLedger(Authentication auth) {
+    public Set<Ledger> getUserLedger(Authentication auth, @RequestParam(required = false) Long lastUpdate) {
+        Set<Ledger> result = null;
         String username = ((UserDetails) auth.getPrincipal()).getUsername();
-        return new LedgerService().findByUsername(username);
+        LedgerService ledgerService = new LedgerService();
+        if (lastUpdate == null) {
+            result = ledgerService.findByUsername(username);
+        } else {
+            Date lastUpdateTime = new Date(lastUpdate);
+            result = ledgerService.findByLastUpdate(username, lastUpdateTime);
+        }
+        LedgerService.processLedgersBeforeParse(result);
+        return result;
     }
 
     @Secured({"ROLE_USER"})

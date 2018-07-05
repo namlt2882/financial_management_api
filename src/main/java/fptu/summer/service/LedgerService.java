@@ -28,6 +28,11 @@ public class LedgerService extends BaseAuthenticatedService {
         return ledgerDAO.findByUsername(username);
     }
 
+    public Set<Ledger> findByLastUpdate(String username, Date lastUpdate) {
+        LedgerDAO ledgerDAO = new LedgerDAO();
+        return ledgerDAO.findByLastUpdate(username, lastUpdate);
+    }
+
     public List<Ledger> createNewLedgers(String username, List<Ledger> l) {
         try {
             User user = new User(username);
@@ -131,6 +136,12 @@ public class LedgerService extends BaseAuthenticatedService {
         l.parallelStream().forEach(ledger -> {
             ledger.setStatus(ledgerStatus.getStatus());
             ledger.setLastUpdate(updateTime);
+        });
+    }
+
+    public static void processLedgersBeforeParse(Set<Ledger> l) {
+        l.stream().flatMap(ledger -> ledger.getTransactionGroups().stream()).forEach(tg -> {
+            tg.setLedger(null);
         });
     }
 
