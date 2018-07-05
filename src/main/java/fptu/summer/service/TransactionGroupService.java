@@ -75,7 +75,7 @@ public class TransactionGroupService extends BaseAuthenticatedService {
             copyTransactionGroup(src, des);
         });
         //update
-        transactionGroupDAO.updateTransactionGroup(originalList);
+        transactionGroupDAO.update(originalList);
         //return updated list
         originalList.forEach(tg -> {
             tg.setLedger(null);
@@ -83,22 +83,27 @@ public class TransactionGroupService extends BaseAuthenticatedService {
         return originalList;
     }
 
-    public List<TransactionGroup> disableTransactionGroup(String username, List<Long> ids) {
+    public List<TransactionGroup> disableTransactionGroup(String username, List<TransactionGroup> l) {
         TransactionGroupDAO transactionGroupDAO = new TransactionGroupDAO();
+        //remove unknown transaction group
+        l = l.stream().filter(tg -> tg.getId() != null).collect(Collectors.toList());
         //get original transaction group from db
+        List<Long> ids = l.stream().map(tg -> tg.getId()).collect(Collectors.toList());
         List<TransactionGroup> originalList = transactionGroupDAO.findByIds(ids);
         //filter groups which have disable status
         originalList = originalList.stream()
                 .filter(tg -> tg.getStatus() != TransactionGroupStatus.DISABLE.getStatus())
                 .collect(Collectors.toList());
         //set status
-        Date currentTime = new Date();
+        Map<Long, TransactionGroup> tmpMap = new HashMap<>();
+        l.forEach(tg -> tmpMap.put(tg.getId(), tg));
         originalList.forEach(tg -> {
+            TransactionGroup tmp = tmpMap.get(tg.getId());
             tg.setStatus(TransactionGroupStatus.DISABLE.getStatus());
-            tg.setLastUpdate(currentTime);
+            tg.setLastUpdate(tmp.getLastUpdate());
         });
         //update
-        transactionGroupDAO.updateTransactionGroup(originalList);
+        transactionGroupDAO.update(originalList);
         //return updated list
         originalList.forEach(tg -> {
             tg.setLedger(null);
@@ -114,10 +119,7 @@ public class TransactionGroupService extends BaseAuthenticatedService {
     }
 
     private void addTransactionGroup(Set<TransactionGroup> src, Set<TransactionGroup> des, Ledger ledger) {
-        Date curTime = new Date();
         src.stream().forEach(tg -> {
-            tg.setInsertDate(curTime);
-            tg.setLastUpdate(curTime);
             tg.setLedger(ledger);
             des.add(tg);
         });

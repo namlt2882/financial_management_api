@@ -55,14 +55,11 @@ public class TransactionGroupApi {
     public List<TransactionGroup> updateGroups(@RequestBody List<TransactionGroup> input) {
         return new TransactionGroupService().updateTransactionGroup(input);
     }
-    
+
     @Secured({"ROLE_USER"})
     @PostMapping(value = "/disable")
-    public List<TransactionGroup> disableLedgers(Authentication auth, @RequestParam String groupIds) {
+    public List<TransactionGroup> disableLedgers(Authentication auth, @RequestParam List<TransactionGroup> input) {
         String username = ((UserDetails) auth.getPrincipal()).getUsername();
-        List<Long> ids = Arrays.asList(groupIds.split(",")).parallelStream()
-                .map(s -> Long.parseLong(s.trim()))
-                .collect(Collectors.toList());
-        return new TransactionGroupService().disableTransactionGroup(username, ids);
+        return new TransactionGroupService().disableTransactionGroup(username, input);
     }
 }

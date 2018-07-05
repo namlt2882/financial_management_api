@@ -21,7 +21,7 @@ import org.hibernate.criterion.Restrictions;
  */
 public class TransactionGroupDAO extends DAO {
 
-    public List<TransactionGroup> updateTransactionGroup(List<TransactionGroup> l) {
+    public List<TransactionGroup> update(List<TransactionGroup> l) {
         try {
             begin();
             l.forEach(tg -> getSession().update(tg));
@@ -50,7 +50,7 @@ public class TransactionGroupDAO extends DAO {
 
     public List<TransactionGroup> findByIds(List<Long> ids) {
         try {
-            if(ids.isEmpty()){
+            if (ids.isEmpty()) {
                 return new LinkedList<>();
             }
             List<TransactionGroup> result = getSession()
