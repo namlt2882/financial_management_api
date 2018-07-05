@@ -20,6 +20,9 @@
         <property name="lastUpdate" type="timestamp">
             <column name="last_update" length="19" not-null="true" />
         </property>
+        <property name="insertDate" type="timestamp">
+            <column name="insert_date" length="19" not-null="true" />
+        </property>
         <property name="status" type="int">
             <column name="status" not-null="true" />
         </property>

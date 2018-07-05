@@ -20,8 +20,8 @@ public class Ledger implements java.io.Serializable {
     private Date lastUpdate;
     private int status = LedgerStatus.ENABLE.getStatus();
     @JsonIgnore
-    private Set transactions = new HashSet(0);
-    private Set transactionGroups = new HashSet(0);
+    private Set<Transaction> transactions = new HashSet(0);
+    private Set<TransactionGroup> transactionGroups = new HashSet(0);
     @JsonIgnore
     private Integer userId;
 
@@ -92,19 +92,19 @@ public class Ledger implements java.io.Serializable {
         this.status = status;
     }
 
-    public Set getTransactions() {
+    public Set<Transaction> getTransactions() {
         return this.transactions;
     }
 
-    public void setTransactions(Set transactions) {
+    public void setTransactions(Set<Transaction> transactions) {
         this.transactions = transactions;
     }
 
-    public Set getTransactionGroups() {
+    public Set<TransactionGroup> getTransactionGroups() {
         return this.transactionGroups;
     }
 
-    public void setTransactionGroups(Set transactionGroups) {
+    public void setTransactionGroups(Set<TransactionGroup> transactionGroups) {
         this.transactionGroups = transactionGroups;
     }
 

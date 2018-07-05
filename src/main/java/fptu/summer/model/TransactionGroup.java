@@ -1,6 +1,7 @@
 package fptu.summer.model;
 // Generated Jun 3, 2018 2:37:40 PM by Hibernate Tools 4.3.1
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,15 +11,35 @@ import java.util.Set;
  */
 public class TransactionGroup implements java.io.Serializable {
 
+    @JsonProperty("local_id")
+    private Long localId;
+    @JsonProperty("server_id")
     private Long id;
     private Ledger ledger;
     private String name;
     private int transactionType;
     private Date lastUpdate;
+    private Date insertDate;
     private int status;
-    private Set childrenGroups = new HashSet(0);
+    private Set<TransactionGroup> childrenGroups = new HashSet<>(0);
 
     public TransactionGroup() {
+    }
+
+    public Long getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(Long localId) {
+        this.localId = localId;
+    }
+
+    public Date getInsertDate() {
+        return insertDate;
+    }
+
+    public void setInsertDate(Date insertDate) {
+        this.insertDate = insertDate;
     }
 
     public Long getId() {
@@ -69,11 +90,11 @@ public class TransactionGroup implements java.io.Serializable {
         this.status = status;
     }
 
-    public Set getChildrenGroups() {
+    public Set<TransactionGroup> getChildrenGroups() {
         return childrenGroups;
     }
 
-    public void setChildrenGroups(Set childrenGroups) {
+    public void setChildrenGroups(Set<TransactionGroup> childrenGroups) {
         this.childrenGroups = childrenGroups;
     }
 
