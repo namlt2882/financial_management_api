@@ -1,6 +1,9 @@
 package fptu.summer.model;
 // Generated Jun 3, 2018 2:37:40 PM by Hibernate Tools 4.3.1
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fptu.summer.model.enumeration.TransactionStatus;
 import java.util.Date;
 
 /**
@@ -8,20 +11,33 @@ import java.util.Date;
  */
 public class Transaction implements java.io.Serializable {
 
+    @JsonProperty("local_id")
+    private Long localId;
+    @JsonProperty("server_id")
     private Long id;
     private Ledger ledger;
+    @JsonIgnore
     private Stakeholder debtor;
+    @JsonIgnore
     private Stakeholder creditor;
     private TransactionGroup transactionGroup;
     private double balance;
     private String note;
-    private boolean countedOnReport;
+    private boolean countedOnReport = true;
     private Date insertDate;
     private Date lastUpdate;
-    private int status;
+    private int status = TransactionStatus.ENABLE.getStatus();
     private Date date;
 
     public Transaction() {
+    }
+
+    public Long getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(Long localId) {
+        this.localId = localId;
     }
 
     public Date getDate() {

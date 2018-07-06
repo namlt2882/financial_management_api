@@ -2,6 +2,7 @@ package fptu.summer.model;
 // Generated Jun 3, 2018 2:37:40 PM by Hibernate Tools 4.3.1
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fptu.summer.model.enumeration.LedgerStatus;
 import java.util.Date;
 import java.util.HashSet;
@@ -12,6 +13,9 @@ import java.util.Set;
  */
 public class Ledger implements java.io.Serializable {
 
+    @JsonProperty("local_id")
+    private Long localId;
+    @JsonProperty("server_id")
     private Long id;
     private String name;
     private String currency;
@@ -26,6 +30,14 @@ public class Ledger implements java.io.Serializable {
     private Integer userId;
 
     public Ledger() {
+    }
+
+    public Long getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(Long localId) {
+        this.localId = localId;
     }
 
     public Integer getUserId() {
