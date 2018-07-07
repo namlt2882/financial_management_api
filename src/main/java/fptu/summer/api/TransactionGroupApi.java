@@ -5,6 +5,7 @@
  */
 package fptu.summer.api;
 
+import fptu.summer.dto.LedgerTransaction;
 import fptu.summer.dto.LedgerTransactionGroup;
 import fptu.summer.model.Ledger;
 import fptu.summer.model.TransactionGroup;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import static fptu.summer.service.TransactionGroupService.convertToLedger;
 import static fptu.summer.service.TransactionGroupService.convertToTransactionGroupView;
+import fptu.summer.service.TransactionService;
+import static fptu.summer.service.TransactionService.convertToLedger;
+import static fptu.summer.service.TransactionService.convertToTransactionView;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -46,7 +50,7 @@ public class TransactionGroupApi {
     @PostMapping
     public List<LedgerTransactionGroup> addNewGroup(@RequestBody List<LedgerTransactionGroup> input) {
         List<Ledger> ll = convertToLedger(input);
-        List<LedgerTransactionGroup> rs = convertToTransactionGroupView(new TransactionGroupService().addNewGroup(ll));
+        List<LedgerTransactionGroup> rs = convertToTransactionGroupView(new TransactionGroupService().addNewTransactionGroup(ll));
         return rs;
     }
 

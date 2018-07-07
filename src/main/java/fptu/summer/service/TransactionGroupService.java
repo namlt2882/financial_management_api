@@ -6,9 +6,11 @@
 package fptu.summer.service;
 
 import fptu.summer.dao.LedgerDAO;
+import fptu.summer.dao.TransactionDAO;
 import fptu.summer.dao.TransactionGroupDAO;
 import fptu.summer.dto.LedgerTransactionGroup;
 import fptu.summer.model.Ledger;
+import fptu.summer.model.Transaction;
 import fptu.summer.model.TransactionGroup;
 import fptu.summer.model.enumeration.TransactionGroupStatus;
 import java.util.ArrayList;
@@ -32,31 +34,25 @@ public class TransactionGroupService extends BaseAuthenticatedService {
         return new TransactionGroupDAO().findByLastUpdate(lastUpdate, ledgerIds);
     }
 
-    public List<Ledger> addNewGroup(List<Ledger> ledgers) {
-        LedgerDAO ledgerDao = new LedgerDAO();
+    public List<Ledger> addNewTransactionGroup(List<Ledger> ledgers) {
         //filter unknown ledgers
         ledgers = ledgers.stream().filter(l -> l.getId() != null).collect(Collectors.toList());
-        //filter transaction groups which don't have local id
-        ledgers.forEach(l -> {
+        //filter transaction group which don't have local id
+        ledgers.parallelStream().forEach(l -> {
             Set<TransactionGroup> tmp = l.getTransactionGroups();
             tmp = tmp.stream().filter(tg -> tg.getLocalId() != null).collect(Collectors.toSet());
             l.setTransactionGroups(tmp);
+            //set ledger id for transaction group objects
+            tmp.forEach(tranc -> {
+                tranc.setLedger(l);
+            });
         });
-
-        List<Long> ledgerIds = ledgers.stream().map(l -> l.getId()).collect(Collectors.toList());
-        //get original ledgers
-        List<Ledger> originLedgers = ledgerDao.findByIds(ledgerIds);
-        //add new transaction group
-        Map<Long, Ledger> map = new HashMap<>();
-        for (Ledger ledger : ledgers) {
-            map.put(ledger.getId(), ledger);
-        }
-        originLedgers.parallelStream().forEach(des -> {
-            Ledger src = map.get(des.getId());
-            addTransactionGroup(src.getTransactionGroups(), des.getTransactionGroups(), des);
-        });
-        //insert new transaction groups
-        ledgerDao.update(originLedgers);
+        List<TransactionGroup> result = ledgers.stream()
+                .flatMap(ledger -> ledger.getTransactionGroups().stream())
+                .collect(Collectors.toList());
+        TransactionGroupDAO transactionGroupDAO = new TransactionGroupDAO();
+        //insert to db
+        transactionGroupDAO.insert(result);
         return ledgers;
     }
 

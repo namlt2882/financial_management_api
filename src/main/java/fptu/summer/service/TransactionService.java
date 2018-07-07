@@ -38,17 +38,13 @@ public class TransactionService extends BaseAuthenticatedService {
         //filter unknown ledgers
         ledgers = ledgers.stream().filter(l -> l.getId() != null).collect(Collectors.toList());
         //filter transaction which don't have local id
-        Date currentTime = new Date();
         ledgers.parallelStream().forEach(l -> {
             Set<Transaction> tmp = l.getTransactions();
             tmp = tmp.stream().filter(tg -> tg.getLocalId() != null).collect(Collectors.toSet());
             l.setTransactions(tmp);
-            //set insert date, last update time
             //set ledger id for transaction objects
             tmp.forEach(tranc -> {
                 tranc.setLedger(l);
-                tranc.setInsertDate(currentTime);
-                tranc.setLastUpdate(currentTime);
             });
         });
         List<Transaction> result = ledgers.stream()

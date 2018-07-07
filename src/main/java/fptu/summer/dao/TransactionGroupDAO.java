@@ -6,6 +6,7 @@
 package fptu.summer.dao;
 
 import fptu.summer.model.Ledger;
+import fptu.summer.model.Transaction;
 import fptu.summer.model.TransactionGroup;
 import java.util.Date;
 import java.util.HashSet;
@@ -21,6 +22,20 @@ import org.hibernate.criterion.Restrictions;
  */
 public class TransactionGroupDAO extends DAO {
 
+    public List<TransactionGroup> insert(List<TransactionGroup> l) {
+        try {
+            begin();
+            l.forEach(tranc -> getSession().save(tranc));
+            commit();
+            return l;
+        } catch (Exception e) {
+            rollback();
+            throw e;
+        } finally {
+            close();
+        }
+    }
+    
     public List<TransactionGroup> update(List<TransactionGroup> l) {
         try {
             begin();
