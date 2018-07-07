@@ -35,13 +35,12 @@ public class LedgerService extends BaseAuthenticatedService {
 
     public List<Ledger> createNewLedgers(String username, List<Ledger> l) {
         try {
+            //filter ledger that don't have local id
+            l = l.stream().filter(ledger -> ledger.getLocalId() != null).collect(Collectors.toList());
             User user = new User(username);
             if (validate(user)) {
-                Date currentTime = new Date();
                 l.parallelStream().forEach(ledger -> {
                     ledger.setUserId(user.getId());
-                    ledger.setInsertDate(currentTime);
-                    ledger.setLastUpdate(currentTime);
                 });
                 LedgerDAO ledgerDAO = new LedgerDAO();
                 ledgerDAO.insert(l);
@@ -56,20 +55,20 @@ public class LedgerService extends BaseAuthenticatedService {
     }
 
     public List<Ledger> updateLedgers(String username, List<Ledger> list) {
-        List<Ledger> ledgerList = null;
+        List<Ledger> originalList = null;
         LedgerDAO ledgerDAO = new LedgerDAO();
         try {
             list = list.stream().filter(ledger -> ledger.getId() != null).collect(Collectors.toList());
             List<Long> ids = list.stream().map(ledger -> ledger.getId()).collect(Collectors.toList());
             //get original ledger
-            ledgerList = ledgerDAO.findByIds(ids);
+            originalList = ledgerDAO.findByIds(ids);
             //copy
-            copyLedgers(list, ledgerList);
+            copyLedgers(list, originalList);
             //update
             User user = new User(username);
-            if (!ledgerList.isEmpty()) {
+            if (!originalList.isEmpty()) {
                 if (validate(user)) {
-                    ledgerDAO.update(ledgerList);
+                    ledgerDAO.update(originalList);
                 } else {
                     throw new Exception("unable to update ledger for this user");
                 }
@@ -78,23 +77,33 @@ public class LedgerService extends BaseAuthenticatedService {
             e.printStackTrace();
             throw new DataValidateException(e.getMessage());
         }
-        return ledgerList;
+        return originalList;
     }
 
-    public List<Ledger> disableLedgers(String username, List<Long> ids) {
-        List<Ledger> ledgerList = null;
+    public List<Ledger> disableLedgers(String username, List<Ledger> l) {
+        List<Ledger> originalList = null;
         LedgerDAO ledgerDAO = new LedgerDAO();
         try {
+            l = l.stream().filter(ledger -> ledger.getId() != null).collect(Collectors.toList());
             //get original ledger
-            ledgerList = ledgerDAO.findByIds(ids);
-            ledgerList = ledgerList.stream()
+            List<Long> ids = l.stream().map(ledger -> ledger.getId()).collect(Collectors.toList());
+            originalList = ledgerDAO.findByIds(ids);
+            originalList = originalList.stream()
                     .filter(ledger -> ledger.getStatus() == LedgerStatus.ENABLE.getStatus())
                     .collect(Collectors.toList());
-            setStatusLedgers(ledgerList, LedgerStatus.DISABLE);
+            //set status
+            l.parallelStream().forEach(ledger -> ledger.setStatus(LedgerStatus.DISABLE.getStatus()));
+            //set last update time
+            Map<Long, Ledger> tmpMap = new HashMap<>();
+            l.forEach(ledger -> tmpMap.put(ledger.getId(), ledger));
+            originalList.parallelStream().forEach(des -> {
+                Ledger src = tmpMap.get(des.getId());
+                des.setLastUpdate(src.getLastUpdate());
+            });
             User user = new User(username);
-            if (!ledgerList.isEmpty()) {
+            if (!originalList.isEmpty()) {
                 if (validate(user)) {
-                    ledgerDAO.update(ledgerList);
+                    ledgerDAO.update(originalList);
                 } else {
                     throw new Exception("unable to disable ledger for this user");
                 }
@@ -103,23 +112,33 @@ public class LedgerService extends BaseAuthenticatedService {
             e.printStackTrace();
             throw new DataValidateException(e.getMessage());
         }
-        return ledgerList;
+        return originalList;
     }
 
-    public List<Ledger> enableLedgers(String username, List<Long> ids) {
-        List<Ledger> ledgerList = null;
+    public List<Ledger> enableLedgers(String username, List<Ledger> l) {
+        List<Ledger> originalList = null;
         LedgerDAO ledgerDAO = new LedgerDAO();
         try {
+            l = l.stream().filter(ledger -> ledger.getId() != null).collect(Collectors.toList());
             //get original ledger
-            ledgerList = ledgerDAO.findByIds(ids);
-            ledgerList = ledgerList.stream()
+            List<Long> ids = l.stream().map(ledger -> ledger.getId()).collect(Collectors.toList());
+            originalList = ledgerDAO.findByIds(ids);
+            originalList = originalList.stream()
                     .filter(ledger -> ledger.getStatus() == LedgerStatus.DISABLE.getStatus())
                     .collect(Collectors.toList());
-            setStatusLedgers(ledgerList, LedgerStatus.ENABLE);
+            //set status
+            l.parallelStream().forEach(ledger -> ledger.setStatus(LedgerStatus.ENABLE.getStatus()));
+            //set last update time
+            Map<Long, Ledger> tmpMap = new HashMap<>();
+            l.forEach(ledger -> tmpMap.put(ledger.getId(), ledger));
+            originalList.parallelStream().forEach(des -> {
+                Ledger src = tmpMap.get(des.getId());
+                des.setLastUpdate(src.getLastUpdate());
+            });
             User user = new User(username);
-            if (!ledgerList.isEmpty()) {
+            if (!originalList.isEmpty()) {
                 if (validate(user)) {
-                    ledgerDAO.update(ledgerList);
+                    ledgerDAO.update(originalList);
                 } else {
                     throw new Exception("unable to disable ledger for this user");
                 }
@@ -128,32 +147,15 @@ public class LedgerService extends BaseAuthenticatedService {
             e.printStackTrace();
             throw new DataValidateException(e.getMessage());
         }
-        return ledgerList;
-    }
-
-    private void setStatusLedgers(List<Ledger> l, LedgerStatus ledgerStatus) {
-        Date updateTime = new Date();
-        l.parallelStream().forEach(ledger -> {
-            ledger.setStatus(ledgerStatus.getStatus());
-            ledger.setLastUpdate(updateTime);
-        });
-    }
-
-    public static void processLedgersBeforeParse(Set<Ledger> l) {
-        l.stream().flatMap(ledger -> ledger.getTransactionGroups().stream()).forEach(tg -> {
-            tg.setLedger(null);
-        });
+        return originalList;
     }
 
     public void copyLedgers(List<Ledger> lsrc, List<Ledger> ldes) {
-        Date updateTime = new Date();
         Map<Long, Ledger> map = new HashMap<>();
-        for (Ledger ledger : lsrc) {
-            map.put(ledger.getId(), ledger);
-        }
-        ldes.parallelStream().forEach(ledger -> {
-            Ledger tmp = map.get(ledger.getId());
-            copyLedger(tmp, ledger, updateTime);
+        lsrc.forEach(ledger -> map.put(ledger.getId(), ledger));
+        ldes.parallelStream().forEach(des -> {
+            Ledger src = map.get(des.getId());
+            copyLedger(src, des, src.getLastUpdate());
         });
     }
 

@@ -43,7 +43,6 @@ public class LedgerApi {
             Date lastUpdateTime = new Date(lastUpdate);
             result = ledgerService.findByLastUpdate(username, lastUpdateTime);
         }
-        LedgerService.processLedgersBeforeParse(result);
         return result;
     }
 
@@ -63,22 +62,18 @@ public class LedgerApi {
 
     @Secured({"ROLE_USER"})
     @PostMapping(value = "/disable")
-    public List<Ledger> disableLedgers(Authentication auth, @RequestParam String ledgerIds) {
+    public List<Long> disableLedgers(Authentication auth, @RequestBody List<Ledger> ledgerList) {
         String username = ((UserDetails) auth.getPrincipal()).getUsername();
-        List<Long> ids = Arrays.asList(ledgerIds.split(",")).parallelStream()
-                .map(s -> Long.parseLong(s.trim()))
-                .collect(Collectors.toList());
-        return new LedgerService().disableLedgers(username, ids);
+        List<Ledger> result = new LedgerService().disableLedgers(username, ledgerList);
+        return result.stream().map(ledger -> ledger.getId()).collect(Collectors.toList());
     }
 
     @Secured({"ROLE_USER"})
     @PostMapping(value = "/enable")
-    public List<Ledger> enableLedgers(Authentication auth, @RequestParam String ledgerIds) {
+    public List<Long> enableLedgers(Authentication auth, @RequestBody List<Ledger> ledgerList) {
         String username = ((UserDetails) auth.getPrincipal()).getUsername();
-        List<Long> ids = Arrays.asList(ledgerIds.split(",")).parallelStream()
-                .map(s -> Long.parseLong(s.trim()))
-                .collect(Collectors.toList());
-        return new LedgerService().enableLedgers(username, ids);
+        List<Ledger> result = new LedgerService().enableLedgers(username, ledgerList);
+        return result.stream().map(ledger -> ledger.getId()).collect(Collectors.toList());
     }
 
 }
