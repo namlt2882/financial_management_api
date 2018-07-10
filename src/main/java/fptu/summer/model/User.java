@@ -15,7 +15,6 @@ public class User implements java.io.Serializable {
     @JsonIgnore
     private Integer id;
     private String username;
-    @JsonIgnore
     private String password;
     private String firstName;
     private String lastName;
@@ -24,6 +23,7 @@ public class User implements java.io.Serializable {
     private Date lastUpdate = new Date();
     private int status = UserStatus.ENABLE.getStatus();
     private UserSetting userSetting;
+    @JsonIgnore
     private Set<Role> roles = new HashSet<>(0);
 
     public User() {

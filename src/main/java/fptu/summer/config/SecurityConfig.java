@@ -55,9 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 //        http.httpBasic().and().csrf().disable();
         http.csrf().ignoringAntMatchers("/**");
-        http.authorizeRequests().antMatchers("/login**").permitAll().and().logout().disable();
+        http.authorizeRequests().antMatchers("/login**", "/register").permitAll().and().logout().disable();
         http.httpBasic().authenticationEntryPoint(restServicesEntryPoint())
-//                .and().formLogin().and().logout().logoutUrl("")
+                //                .and().formLogin().and().logout().logoutUrl("")
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler());

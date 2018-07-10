@@ -157,9 +157,9 @@ public class JwtService {
         if (token == null || token.trim().length() == 0) {
             return false;
         }
-        if (!manager.isTokenExisted(token)) {
-            return false;
-        }
+//        if (!manager.isTokenExisted(token)) {
+//            return false;
+//        }
         String username = getUsernameFromToken(token);
         
         if (username == null || username.isEmpty()) {

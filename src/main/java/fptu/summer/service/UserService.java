@@ -27,6 +27,10 @@ public class UserService {
 
     public User createNewUser(User user) {
         RoleDAO roleDAO = new RoleDAO();
+        user.setUsername(user.getUsername().toUpperCase());
+        Date curDate = new Date();
+        user.setInsertDate(curDate);
+        user.setLastUpdate(curDate);
         try {
             //insert role for user
             List<Role> roles = roleDAO.findAll();

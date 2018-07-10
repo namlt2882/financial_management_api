@@ -5,14 +5,13 @@
  */
 package fptu.summer.api;
 
+import fptu.summer.dto.UserDto;
 import fptu.summer.model.User;
 import fptu.summer.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -20,16 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ADMIN
  */
 @RestController
-@RequestMapping("users")
 public class UserApi {
 
     public UserApi() {
     }
 
-    @Secured({"ROLE_USER"})
-    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public User addNewUser(@RequestBody User user) {
-        user.setUsername(user.getUsername().toString());
+    @PostMapping(value = "/register", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public User addNewUser(@RequestBody UserDto userDto) {
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
         User result = new UserService().createNewUser(user);
         return result;
     }
