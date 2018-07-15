@@ -22,11 +22,9 @@
         <mapping resource="UserNotification.hbm.xml"/>
         <mapping resource="TransactionGroup.hbm.xml"/>
         <mapping resource="Transaction.hbm.xml"/>
-        <mapping resource="SystemNotification.hbm.xml"/>
         <mapping resource="Stakeholder.hbm.xml"/>
         <mapping resource="Role.hbm.xml"/>
         <mapping resource="Notification.hbm.xml"/>
         <mapping resource="Ledger.hbm.xml"/>
-        <mapping resource="LastViewNotification.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

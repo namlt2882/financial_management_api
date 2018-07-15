@@ -26,5 +26,8 @@
         <property name="status" type="int">
             <column name="status" not-null="true" />
         </property>
+        <property name="userId" type="int">
+            <column name="user_id" not-null="false" />
+        </property>
     </class>
 </hibernate-mapping>
