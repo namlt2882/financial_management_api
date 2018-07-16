@@ -29,5 +29,11 @@
         <property name="userId" type="int">
             <column name="user_id" not-null="false" />
         </property>
+        <set name="userNotifications" table="user_notification" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="notification_id" not-null="true" />
+            </key>
+            <one-to-many class="fptu.summer.model.UserNotification" />
+        </set>
     </class>
 </hibernate-mapping>

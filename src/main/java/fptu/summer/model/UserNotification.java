@@ -10,9 +10,14 @@ public class UserNotification implements java.io.Serializable {
 
     private UserNotificationId id;
     private Notification notification;
-    private boolean isReaded;
+    private boolean isReaded = false;
 
     public UserNotification() {
+    }
+
+    public UserNotification(UserNotificationId id, boolean isReaded) {
+        this.id = id;
+        this.isReaded = isReaded;
     }
 
     public UserNotificationId getId() {
