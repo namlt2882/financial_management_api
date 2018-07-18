@@ -36,7 +36,7 @@ public class NotificationApi {
 
     @Secured({"ROLE_USER"})
     @PostMapping(value = "/readed")
-    public void checkNotificationReaded(Authentication auth, @RequestBody List<Long> dtos) {
+    public void checkNotificationReaded(Authentication auth, @RequestBody List<NotificationDto> dtos) {
         String username = ((UserDetails) auth.getPrincipal()).getUsername();
         new NotificationService().checkNotificationReaded(username, dtos);
     }
