@@ -7,6 +7,7 @@ package fptu.summer.api;
 
 import fptu.summer.dto.NotificationDto;
 import fptu.summer.service.NotificationService;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.springframework.security.access.annotation.Secured;
@@ -35,9 +36,16 @@ public class NotificationApi {
     }
 
     @Secured({"ROLE_USER"})
-    @PostMapping(value = "/readed")
-    public void checkNotificationReaded(Authentication auth, @RequestBody List<NotificationDto> dtos) {
+    @GetMapping(value = "/lastUpdate")
+    public Date getLastUpdate(Authentication auth) {
         String username = ((UserDetails) auth.getPrincipal()).getUsername();
-        new NotificationService().checkNotificationReaded(username, dtos);
+        return new NotificationService().findLastUpdate(username);
+    }
+
+    @Secured({"ROLE_USER"})
+    @PostMapping(value = "/read")
+    public void checkNotificationReaded(Authentication auth, @RequestBody NotificationDto[] dtos) {
+        String username = ((UserDetails) auth.getPrincipal()).getUsername();
+        new NotificationService().checkNotificationReaded(username, Arrays.asList(dtos));
     }
 }

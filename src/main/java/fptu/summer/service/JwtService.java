@@ -34,7 +34,7 @@ public class JwtService {
     public static final String ROLES = "roles";
     public static final String STATUS = "status";
     public static final String SECRET_KEY = "1jnd.8jm8.fnw9.ls0s.mc9s.2.f9s.20ds.d2r4.2sfy.bhg.7jgtf.vde";
-    public static final int EXPIRE_TIME = 86400000;//1 day
+    public static final int EXPIRE_TIME = 86400000*7;//7 days
     private final ObjectMapper om = new ObjectMapper();
     private final JwtManager manager = new JwtManager();
     
