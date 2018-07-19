@@ -48,32 +48,16 @@ public class LedgerApi {
 
     @Secured({"ROLE_USER"})
     @PostMapping
-    public List<Ledger> addLedgers(Authentication auth, @RequestBody List<Ledger> ledgerList) {
+    public List<Ledger> addLedgers(Authentication auth, @RequestBody Ledger[] ledgerList) {
         String username = ((UserDetails) auth.getPrincipal()).getUsername();
-        return new LedgerService().createNewLedgers(username, ledgerList);
+        return new LedgerService().createNewLedgers(username, Arrays.asList(ledgerList));
     }
 
     @Secured({"ROLE_USER"})
     @PutMapping
-    public List<Ledger> updateLedgers(Authentication auth, @RequestBody List<Ledger> ledgerList) {
+    public void updateLedgers(Authentication auth, @RequestBody Ledger[] ledgerList) {
         String username = ((UserDetails) auth.getPrincipal()).getUsername();
-        return new LedgerService().updateLedgers(username, ledgerList);
-    }
-
-    @Secured({"ROLE_USER"})
-    @PostMapping(value = "/disable")
-    public List<Long> disableLedgers(Authentication auth, @RequestBody List<Ledger> ledgerList) {
-        String username = ((UserDetails) auth.getPrincipal()).getUsername();
-        List<Ledger> result = new LedgerService().disableLedgers(username, ledgerList);
-        return result.stream().map(ledger -> ledger.getId()).collect(Collectors.toList());
-    }
-
-    @Secured({"ROLE_USER"})
-    @PostMapping(value = "/enable")
-    public List<Long> enableLedgers(Authentication auth, @RequestBody List<Ledger> ledgerList) {
-        String username = ((UserDetails) auth.getPrincipal()).getUsername();
-        List<Ledger> result = new LedgerService().enableLedgers(username, ledgerList);
-        return result.stream().map(ledger -> ledger.getId()).collect(Collectors.toList());
+        new LedgerService().updateLedgers(username, Arrays.asList(ledgerList));
     }
 
 }
