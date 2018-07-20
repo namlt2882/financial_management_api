@@ -5,23 +5,17 @@
  */
 package fptu.summer.api;
 
-import fptu.summer.dto.LedgerTransaction;
 import fptu.summer.dto.LedgerTransactionGroup;
 import fptu.summer.model.Ledger;
 import fptu.summer.model.TransactionGroup;
-import fptu.summer.service.LedgerService;
 import fptu.summer.service.TransactionGroupService;
 import java.util.List;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import static fptu.summer.service.TransactionGroupService.convertToLedger;
 import static fptu.summer.service.TransactionGroupService.convertToTransactionGroupView;
-import fptu.summer.service.TransactionService;
-import static fptu.summer.service.TransactionService.convertToLedger;
-import static fptu.summer.service.TransactionService.convertToTransactionView;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.stream.Collectors;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,22 +42,16 @@ public class TransactionGroupApi {
 
     @Secured({"ROLE_USER"})
     @PostMapping
-    public List<LedgerTransactionGroup> addNewGroup(@RequestBody List<LedgerTransactionGroup> input) {
-        List<Ledger> ll = convertToLedger(input);
-        List<LedgerTransactionGroup> rs = convertToTransactionGroupView(new TransactionGroupService().addNewTransactionGroup(ll));
+    public List<TransactionGroup> addNewGroup(@RequestBody LedgerTransactionGroup[] input) {
+        List<Ledger> ll = convertToLedger(Arrays.asList(input));
+        List<TransactionGroup> rs = new TransactionGroupService().addNewTransactionGroup(ll);
         return rs;
     }
 
     @Secured({"ROLE_USER"})
     @PutMapping
-    public List<TransactionGroup> updateGroups(@RequestBody List<TransactionGroup> input) {
-        return new TransactionGroupService().updateTransactionGroup(input);
+    public void updateGroups(@RequestBody TransactionGroup[] input) {
+        new TransactionGroupService().updateTransactionGroup(Arrays.asList(input));
     }
 
-    @Secured({"ROLE_USER"})
-    @PostMapping(value = "/disable")
-    public List<TransactionGroup> disableLedgers(Authentication auth, @RequestParam List<TransactionGroup> input) {
-        String username = ((UserDetails) auth.getPrincipal()).getUsername();
-        return new TransactionGroupService().disableTransactionGroup(username, input);
-    }
 }

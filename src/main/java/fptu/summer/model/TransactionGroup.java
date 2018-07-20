@@ -1,6 +1,7 @@
 package fptu.summer.model;
 // Generated Jun 3, 2018 2:37:40 PM by Hibernate Tools 4.3.1
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fptu.summer.model.enumeration.TransactionGroupStatus;
 import java.util.Date;
@@ -22,6 +23,7 @@ public class TransactionGroup implements java.io.Serializable {
     private Date lastUpdate;
     private Date insertDate;
     private int status = TransactionGroupStatus.ENABLE.getStatus();
+    @JsonIgnore
     private Set<TransactionGroup> childrenGroups = new HashSet<>(0);
 
     public TransactionGroup() {

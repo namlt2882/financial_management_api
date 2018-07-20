@@ -5,15 +5,10 @@
  */
 package fptu.summer.dao;
 
-import fptu.summer.model.Ledger;
-import fptu.summer.model.Transaction;
 import fptu.summer.model.TransactionGroup;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 /**

@@ -7,7 +7,6 @@ package fptu.summer.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fptu.summer.model.TransactionGroup;
-import fptu.summer.model.enumeration.LedgerStatus;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
