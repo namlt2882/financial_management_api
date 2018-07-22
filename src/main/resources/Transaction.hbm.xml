@@ -8,7 +8,7 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="ledger" class="fptu.summer.model.Ledger" fetch="select">
+        <many-to-one name="ledger" class="fptu.summer.model.Ledger" fetch="select" lazy="false">
             <column name="ledger_id" not-null="true" />
         </many-to-one>
         <many-to-one name="debtor" class="fptu.summer.model.Stakeholder" fetch="select">
@@ -17,7 +17,7 @@
         <many-to-one name="creditor" class="fptu.summer.model.Stakeholder" fetch="select">
             <column name="creditor_id" />
         </many-to-one>
-        <many-to-one name="transactionGroup" class="fptu.summer.model.TransactionGroup" fetch="select">
+        <many-to-one name="transactionGroup" class="fptu.summer.model.TransactionGroup" fetch="select" lazy="false">
             <column name="transaction_group_id" not-null="true" />
         </many-to-one>
         <property name="balance" type="double">

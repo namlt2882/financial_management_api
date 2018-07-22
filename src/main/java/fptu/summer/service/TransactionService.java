@@ -34,7 +34,7 @@ public class TransactionService extends BaseAuthenticatedService {
         return new TransactionDAO().findByLastUpdate(lastUpdate, ledgerIds);
     }
 
-    public List<Ledger> addNewTransaction(List<Ledger> ledgers) {
+    public List<Transaction> addNewTransaction(List<Ledger> ledgers) {
         //filter unknown ledgers
         ledgers = ledgers.stream().filter(l -> l.getId() != null).collect(Collectors.toList());
         //filter transaction which don't have local id
@@ -53,7 +53,7 @@ public class TransactionService extends BaseAuthenticatedService {
         TransactionDAO transactionDAO = new TransactionDAO();
         //insert to db
         transactionDAO.insert(result);
-        return ledgers;
+        return result;
     }
 
     public List<Transaction> updateTransactions(List<Transaction> l) {

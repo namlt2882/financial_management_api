@@ -44,10 +44,9 @@ public class TransactionApi {
 
     @Secured({"ROLE_USER"})
     @PostMapping
-    public List<LedgerTransaction> addNewTransaction(@RequestBody List<LedgerTransaction> input) {
+    public List<Transaction> addNewTransaction(@RequestBody List<LedgerTransaction> input) {
         List<Ledger> ll = convertToLedger(input);
-        List<LedgerTransaction> rs = convertToTransactionView(new TransactionService().addNewTransaction(ll));
-        return rs;
+        return new TransactionService().addNewTransaction(ll);
     }
 
     @Secured({"ROLE_USER"})
