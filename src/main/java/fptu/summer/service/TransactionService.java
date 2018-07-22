@@ -7,12 +7,9 @@ package fptu.summer.service;
 
 import fptu.summer.dao.LedgerDAO;
 import fptu.summer.dao.TransactionDAO;
-import fptu.summer.dao.TransactionGroupDAO;
 import fptu.summer.dto.LedgerTransaction;
 import fptu.summer.model.Ledger;
 import fptu.summer.model.Transaction;
-import fptu.summer.model.TransactionGroup;
-import fptu.summer.model.enumeration.TransactionStatus;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,15 +34,20 @@ public class TransactionService extends BaseAuthenticatedService {
     public List<Transaction> addNewTransaction(List<Ledger> ledgers) {
         //filter unknown ledgers
         ledgers = ledgers.stream().filter(l -> l.getId() != null).collect(Collectors.toList());
-        //filter transaction which don't have local id
+        //filter transaction which don't have local id and transaction group
         ledgers.parallelStream().forEach(l -> {
             Set<Transaction> tmp = l.getTransactions();
-            tmp = tmp.stream().filter(tg -> tg.getLocalId() != null).collect(Collectors.toSet());
+            tmp = tmp.stream()
+                    .filter(tranc -> {
+                        if (tranc.getLocalId() != null && tranc.getTransactionGroup() != null) {
+                            //set ledger for transaction objects
+                            tranc.setLedger(l);
+                            return true;
+                        }
+                        return false;
+                    })
+                    .collect(Collectors.toSet());
             l.setTransactions(tmp);
-            //set ledger id for transaction objects
-            tmp.forEach(tranc -> {
-                tranc.setLedger(l);
-            });
         });
         List<Transaction> result = ledgers.stream()
                 .flatMap(ledger -> ledger.getTransactions().stream())
@@ -56,56 +58,42 @@ public class TransactionService extends BaseAuthenticatedService {
         return result;
     }
 
-    public List<Transaction> updateTransactions(List<Transaction> l) {
+    public void updateTransactions(List<Transaction> syncDatas) {
         //filter unknown transaction and transactions which don't have local id
-        l = filterTransactions(l);
+        List<Long> ids = new LinkedList<>();
+        syncDatas = syncDatas.stream()
+                .filter(tranc -> {
+                    if (tranc.getId() != null) {
+                        ids.add(tranc.getId());
+                        return true;
+                    }
+                    return false;
+                })
+                .collect(Collectors.toList());
         //get original transaction
-        List<Long> ids = getIdList(l);
         TransactionDAO transactionDAO = new TransactionDAO();
         List<Transaction> originalTransactions = transactionDAO.findByIds(ids);
         //update transaction
-        Map<Long, Transaction> tmpMap = new HashMap<>();
-        originalTransactions.forEach(tranc -> tmpMap.put(tranc.getId(), tranc));
-        l.forEach(src -> {
-            Transaction des = tmpMap.get(src.getId());
-            copyTransactions(src, des);
-        });
+        originalTransactions = validateTransactions(syncDatas, originalTransactions);
         //update to db
         transactionDAO.update(originalTransactions);
-        //return
-        return originalTransactions;
     }
 
-    public List<Transaction> disableTransactions(List<Transaction> l) {
-        l = filterTransactions(l);
-        List<Long> ids = getIdList(l);
-        TransactionDAO transactionDAO = new TransactionDAO();
-        List<Transaction> originalTransactions = transactionDAO.findByIds(ids);
-        //set transaction status
+    public List<Transaction> validateTransactions(List<Transaction> lsync, List<Transaction> lorigin) {
+        List<Transaction> result = new LinkedList<>();
         Map<Long, Transaction> tmpMap = new HashMap<>();
-        originalTransactions.forEach(tranc -> tmpMap.put(tranc.getId(), tranc));
-        l.forEach(src -> {
-            Transaction des = tmpMap.get(src.getId());
-            des.setStatus(TransactionStatus.DISABLE.getStatus());
-            des.setLastUpdate(src.getLastUpdate());
+        lsync.forEach(tg -> tmpMap.put(tg.getId(), tg));
+        lorigin.forEach(origin -> {
+            Transaction syncData = tmpMap.get(origin.getId());
+            if (syncData.getLastUpdate().getTime() > origin.getLastUpdate().getTime()) {
+                result.add(origin);
+                copyTransaction(syncData, origin);
+            }
         });
-        //update to db
-        transactionDAO.update(originalTransactions);
-        //return
-        return originalTransactions;
+        return result;
     }
 
-    public List<Long> getIdList(List<Transaction> l) {
-        return l.stream().map(tranc -> tranc.getId()).collect(Collectors.toList());
-    }
-
-    private List<Transaction> filterTransactions(List<Transaction> l) {
-        return l.stream()
-                .filter(tranc -> tranc.getId() != null)
-                .collect(Collectors.toList());
-    }
-
-    public static void copyTransactions(Transaction src, Transaction des) {
+    public static void copyTransaction(Transaction src, Transaction des) {
         des.setBalance(src.getBalance());
         des.setCountedOnReport(src.isCountedOnReport());
         des.setNote(src.getNote());
@@ -113,6 +101,7 @@ public class TransactionService extends BaseAuthenticatedService {
         des.setLastUpdate(src.getLastUpdate());
         des.setLedger(src.getLedger());
         des.setTransactionGroup(src.getTransactionGroup());
+        des.setStatus(src.getStatus());
     }
 
     public static List<Ledger> convertToLedger(List<LedgerTransaction> origin) {

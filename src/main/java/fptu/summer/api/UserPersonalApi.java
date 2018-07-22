@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserPersonalApi {
 
     @Secured({"ROLE_USER"})
-    @GetMapping(value = "/")
+    @GetMapping
     public User getUser(Authentication authentication) {
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
         return new UserService().findUserByUsername(username);
@@ -39,7 +39,7 @@ public class UserPersonalApi {
 
 //    @PreAuthorize(value = "hasAnyRole({'USER'})")
     @Secured({"ROLE_USER"})
-    @PostMapping(value = "/")
+    @PostMapping
     public String updateUser(Authentication authentication, @RequestBody User user) {
         String result = "success";
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
