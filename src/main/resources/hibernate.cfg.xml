@@ -4,9 +4,9 @@
     <session-factory>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/personal_finance_db</property>
-        <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">123456</property>
+        <property name="hibernate.connection.url">jdbc:mysql://financemng.mysql.database.azure.com:3306/personal_finance_db?useSSL=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</property>
+        <property name="hibernate.connection.username">sa@financemng</property>
+        <property name="hibernate.connection.password">Nhdong13</property>
         <!--<property name="hibernate.default_schema">personal_finance_db</property>-->
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">validate</property>
